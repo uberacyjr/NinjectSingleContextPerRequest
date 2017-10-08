@@ -9,10 +9,12 @@ namespace SingleContextPerRequest.Repository.Repositorys
     public class PersonRepo : IPerson
     {
         private readonly TestContext _context;
+        private readonly ICar _carRepo;
 
-        public PersonRepo(TestContext context)
+        public PersonRepo(TestContext context, ICar carRepo)
         {
             _context = context;
+            _carRepo = carRepo;
         }
 
         public IEnumerable<Person> GetAllPersons()
@@ -23,8 +25,17 @@ namespace SingleContextPerRequest.Repository.Repositorys
 
         public void Insert(Person person)
         {
-            _context.Person.Add(person);
-            _context.SaveChanges();
+            using (var transaction =  _context.Database.BeginTransaction())
+            {
+                _context.Car.Add(new Car { Name = "Gol 1.6" });
+                _context.Person.Add(person);
+                _context.SaveChanges();
+
+                _carRepo.Insert(new Car {Name = "BMW"});
+
+                transaction.Commit();
+            }
+        
         }
     }
 }

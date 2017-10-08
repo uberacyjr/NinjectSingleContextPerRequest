@@ -1,4 +1,3 @@
-using SingleContextPerRequest.Repository.Context;
 using SingleContextPerRequest.Repository.Interfaces;
 using SingleContextPerRequest.Repository.Repositorys;
 
@@ -10,6 +9,7 @@ namespace SingleContextPerRequest.Web.App_Start
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
     using Ninject.Web.Common;
+    using Repository.Context;
     using System;
     using System.Web;
 
@@ -48,6 +48,7 @@ namespace SingleContextPerRequest.Web.App_Start
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
                 kernel.Bind<IPerson>().To<PersonRepo>();
                 kernel.Bind<ICar>().To<CarRepo>();
+                //kernel.Bind<TestContext>().ToSelf().InRequestScope();
                 kernel.Bind<TestContext>().ToSelf().InRequestScope();
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
